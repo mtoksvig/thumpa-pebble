@@ -1,6 +1,13 @@
 Thumpa demo for the Pebble watch
 ================================
 
+I tried to incorporate a few demo-scene classics:
+- The space ship spinning in 3D
+- The plasma effect
+- Thumpa music
+
+Enjoy
+
 Copyright (C) 2013 Michael Toksvig
 
 This program is free software: you can redistribute it and/or modify
