@@ -56,6 +56,9 @@ PBL_APP_INFO(
 
 #define THUMPA true
 
+bool vibrate = true;
+bool backlight = false;
+
 #define LOG PBL_LOG_APP
 
 Window window;
@@ -223,7 +226,7 @@ void handle_timer(AppContextRef ctx, AppTimerHandle handle, uint32_t cookie) {
 
     model_scale = scales[frame];
 
-    if (frame==7) {
+    if (vibrate && frame==7) {
       uint32_t durations[] = { 50, 50 };
       static VibePattern pattern;
 
@@ -272,15 +275,37 @@ void handle_deinit(AppContextRef ctx) {
 
   if (PLASMA)
     bmp_deinit_container(&bitmap_container);
+
+  if (backlight)
+    light_enable(false);
 }
 
+void handle_up(AppContextRef app_ctx, PebbleButtonEvent *event) {
+  switch (event->button_id) {
+  case BUTTON_ID_UP:
+    vibrate = !vibrate;
+    break;
+  case BUTTON_ID_DOWN:
+    backlight = !backlight;
+    light_enable(backlight);
+    break;
+  default:
+    break;
+  }
+}
 
 void pbl_main(void *params) {
   PebbleAppHandlers handlers = {
     .init_handler = &handle_init,
     .deinit_handler = &handle_deinit,
 
-    .timer_handler = &handle_timer
+    .timer_handler = &handle_timer,
+
+    .input_handlers = {
+      .buttons = {
+        .up = &handle_up
+      }
+    }
   };
   app_event_loop(params, &handlers);
 }
